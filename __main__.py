@@ -126,7 +126,7 @@ def list_getter() -> list:
 
         for files in cwd.glob('*.txt'):
             if not files:
-                print(f"No text file found. Put a file in the directory '{cwd}' and restart.")
+                exit(f"No text file found. Put a file in the directory '{cwd}' and restart.")
 
             user_file = yon(f"Is the file name '{files.name}'?(y/n): ")
 
@@ -136,7 +136,7 @@ def list_getter() -> list:
                     break
 
         if not user_file:
-            print(f"No text file found. Put a file in the directory '{cwd}' and restart.")
+            exit(f"No text file found. Put a file in the directory '{cwd}' and restart.")
         
     printable = yon("Do you want to check all the email address?(y/n): ")
 
