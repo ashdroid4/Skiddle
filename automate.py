@@ -72,8 +72,11 @@ def send_email(
         message.set_content(body)
         if html: message.add_alternative(html, subtype='html')
 
-        smtp.send_message(message, from_addr=email, to_addrs=user)
-        print(f'Email sent to {user}!')
+        try:
+            smtp.send_message(message, from_addr=email, to_addrs=user)
+            print(f'Email sent to {user}!')
+        except Exception as error:
+            print(f'Error!\n{str(type(error).__name__)}: {error}')
         sleep(2)
     
     smtp.quit()
