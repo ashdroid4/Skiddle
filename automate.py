@@ -76,8 +76,15 @@ def send_email(
             smtp.send_message(message, from_addr=email, to_addrs=user)
             print(f'Email sent to {user}!')
         except Exception as error:
-            print(f'Error!\n{str(type(error).__name__)}: {error}')
-        sleep(2)
+            if "quota" and "exceed" in error:
+                print("Outgoing quota exceeded. Sleeping 1 hour.")
+                sleep(36060)
+            else:
+                print(f'Error!\n{str(type(error).__name__)}: {error}
+        except smtplib.SMTPServerDisconnected:
+            smtp = login(email=email, password=password, server=server, port=port)
+
+    print("Task Done!")
     
     smtp.quit()
 # ---------------- SCRIPT END ----------------
