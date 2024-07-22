@@ -189,6 +189,8 @@ def main():
 
 
 while __name__ == "__main__":
+    print("To get help on using skiddle, type 'help'.")
+    print("To stop Skiddle, type 'exit' or press Ctrl + C\n")
     try: main()
     except KeyboardInterrupt: exit("\nExiting due to Keyboard Interrupt")
 # ---------------- SCRIPT END ----------------

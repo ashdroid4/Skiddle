@@ -6,12 +6,27 @@ This script helps to send emails.
 import smtplib, ssl
 from sys import exit
 from time import sleep
+from datetime import datetime, timedelta
 
 from email.message import EmailMessage
 from email.headerregistry import Address
 # -----------------------------
 
+# ------------- CONSTANTS -------------#
+snooze: int = 3
+slept: bool = False
+# ------------------------------------ #
+
 # --------------- SCRIPT START ---------------
+def time(minutes:int) -> tuple[datetime, datetime]:
+    """Returns current time and the time after *arg minutes"""
+    current_time = (datetime.now()).strftime("%H:%M")
+    new_time = (
+        current_time + timedelta(minutes=minutes)
+        ).strftime("%H:%M")
+
+    return current_time, new_time
+
 def login(email:str = ..., password:str = ..., server:str=..., port:int=...):
     """
     This function will help login to your email account.\n
@@ -75,14 +90,33 @@ def send_email(
         try:
             smtp.send_message(message, from_addr=email, to_addrs=user)
             print(f'Email sent to {user}!')
+            slept = False
+
+        except smtplib.SMTPServerDisconnected:
+            print(smtp.SMTPServerDisconnected)
+            smtp = login(email=email, password=password, server=server, port=port)
+            users.append(user)
+
         except Exception as error:
+            now, then = time(65)
             if "quota" and "exceed" in str(error).lower():
-                print("Outgoing quota exceeded. Sleeping 1 hour.")
-                sleep(3660)
+                if slept:
+                    if snooze:
+                        now, then = time(5)
+                        print(f"Outgoing quota not recovered, sleeping 5 more minutes till {then}.")
+                        snooze -= 1
+                        sleep(60 * 5)
+                    else:
+                        print(f"Outgoing quota still not recovered. Sleeping 1 hour till {then}.")
+                        sleep(60 * 65)
+                        slept = True
+                else:
+                    print(f"Outgoing quota exceeded. Sleeping 1 hour till {then}.")
+                    sleep(60 * 65)
+                    slept = True
+                users.append(user)
             else:
                 print(f'Error!\n{str(type(error).__name__)}: {error}')
-        except smtplib.SMTPServerDisconnected:
-            smtp = login(email=email, password=password, server=server, port=port)
 
     print("Task Done!")
     
