@@ -9,6 +9,16 @@ from __init__ import cwd, credential, email_default
 
 # ----------- CONSTANT -----------
 method = dict()
+
+help = """
+
+Skiddle has only three commands now:
+
+- send email: Sends emails to users.
+- set credential: To set credentials such as your email address and password.
+- set default: To set default values like Display Name and Subject.
+
+"""
 # --------------------------------
 
 # --------------- SCRIPT START ---------------
@@ -22,6 +32,7 @@ class Method:
         del method["current"]
 
 def yon(prompt:str) -> bool:
+    """This function converts yes or no into bool."""
     for p in range(5):
         answer = (input(prompt)).lower()
         if answer == "yes" or answer == "y": return True
@@ -29,6 +40,7 @@ def yon(prompt:str) -> bool:
         else: print("Can not understand what you wrote...")
 
 def setCredential(ask:bool=True):
+    """This function helps set credentials such as your email address and password."""
     if ask:
         credential.update(
         {
@@ -44,6 +56,7 @@ def setCredential(ask:bool=True):
         c.write(text)
 
 def setDefault(ask:bool=True):
+    """This function helps set default values like Display Name and Subject."""
     if ask:
         email_default.update(
         {
@@ -72,7 +85,7 @@ def send_email(users:list, **kwargs):
     All the keyword arguments are required.
     """
 
-    from __init__ import credential, email_default
+    global credential, email_default
 
     save = False
 
@@ -82,7 +95,7 @@ def send_email(users:list, **kwargs):
             credential[key] = input(f"Please enter {key}: ")
 
     if save:
-        save = yon("Do you want to save these credentials so that you won't have to enter again?(y/n): ")
+        save = yon("/nDo you want to save these credentials so that you won't have to enter again?(y/n): ")
     if save: setCredential(ask=False)
     
     save = False
@@ -93,7 +106,7 @@ def send_email(users:list, **kwargs):
             email_default[key] = input(f"Please enter {key}: ")
         
     if save:
-        save = yon("Do you want to save these values so that you won't have to enter again?(y/n): ")
+        save = yon("/nDo you want to save these values so that you won't have to enter again?(y/n): ")
     if save:
         setDefault(ask=False)
 
@@ -101,34 +114,36 @@ def send_email(users:list, **kwargs):
 
 
 def list_getter() -> list:
+    """This function will take list of email addresses from the user."""
+    
     print(
-        "There are two ways to provide a list of users:\n"
+        "/nThere are two ways to provide a list of users:\n"
         "1. Type the list here. Emails should be separated by space.\n"
         f"2. Put a text file(.txt) in the '{cwd}' directory. "
         "One line per each email address. Don't put two email addresses on the same line"
     )
     for m in range(5):
-        method = input("Which method do you choose?(say in number): ")
+        method = input("/nWhich method do you choose?(say in number): ")
         if method.isnumeric(): 
             method = int(method)
             if method == 1 or method == 2: break
-            else: print("Choose between 1 or 2")
-        else: print("Say in number...")
+            else: print("/nChoose between 1 or 2")
+        else: print("/nSay in number...")
     
     if method == 1:
-        users = input("Cool, type the emails now: ")
+        users = input("/nCool, type the emails now: ")
         users = users.split(" ")
     
     if method == 2:
-        print("Cool. Let's search the directory.")
+        print("/nCool. Let's search the directory.")
 
         user_file = False
 
         for files in cwd.glob('*.txt'):
             if not files:
-                exit(f"No text file found. Put a file in the directory '{cwd}' and restart.")
+                exit(f"/nNo text file found. Put a file in the directory '{cwd}' and restart.")
 
-            user_file = yon(f"Is the file name '{files.name}'?(y/n): ")
+            user_file = yon(f"/nIs the file name '{files.name}'?(y/n): ")
 
             if user_file:
                 with open(files) as f:
@@ -136,17 +151,19 @@ def list_getter() -> list:
                     break
 
         if not user_file:
-            exit(f"No text file found. Put a file in the directory '{cwd}' and restart.")
+            exit(f"/nNo text file found. Put a file in the directory '{cwd}' and restart.")
         
-    printable = yon("Do you want to check all the email address?(y/n): ")
+    printable = yon("/nDo you want to check all the email address?(y/n): ")
 
     if printable: 
-        print(f"Found {len(users)} email addresses:\n")
+        print(f"/nFound {len(users)} email addresses:\n")
         for user in users: print(user + '\n')
     
     return users
 
 def main():
+    """This will start Skiddle. This function takes command in input and executes."""
+    
     from EmailResources.template import body, html
 
     if not Method.get(): ask = input("> ")
@@ -169,28 +186,28 @@ def main():
         
         if html and body:
             use = yon(
-            "The body of the email and html template already exists. Do you wanna use them?(y/n): "
+            "/nThe body of the email and html template already exists. Do you wanna use them?(y/n): "
             )
 
             if use: send_email(users, body=body, html=html)
             else:
-                body = input("Please enter the body of the email: ")
+                body = input("/nPlease enter the body of the email: ")
                 if yon("Just send the bod without html?"):
                     send_email(users, body=body)
         
         if not body:
-            body = input("Please enter the body of the email: ")
+            body = input("/nPlease enter the body of the email: ")
             if not html: 
-                if yon("Just send the bod without html?"):
+                if yon("/nJust send the bod without html?"):
                     send_email(users, body=body)
             send_email(users, body=body, html=html)          
         
         Method.delete()
 
+print("To get help on using skiddle, type 'help'.")
+print("To stop Skiddle, type 'exit' or press Ctrl + C\n")
 
 while __name__ == "__main__":
-    print("To get help on using skiddle, type 'help'.")
-    print("To stop Skiddle, type 'exit' or press Ctrl + C\n")
     try: main()
     except KeyboardInterrupt: exit("\nExiting due to Keyboard Interrupt")
 # ---------------- SCRIPT END ----------------
