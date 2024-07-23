@@ -22,7 +22,7 @@ def time(minutes:int) -> tuple[str, str]:
     """Returns current time and the time after *arg minutes"""
     current_time = (datetime.now()).strftime("%H:%M")
     new_time = (
-        current_time + timedelta(minutes=minutes)
+        datetime.now() + timedelta(minutes=minutes)
         ).strftime("%H:%M")
 
     return current_time, new_time
@@ -93,8 +93,8 @@ def send_email(
             print(f'Email sent to {user}!')
             slept = False
 
-        except smtplib.SMTPServerDisconnected:
-            print(smtplib.SMTPServerDisconnected)
+        except smtplib.SMTPServerDisconnected as serverDisconnected:
+            print(serverDisconnected)
             smtp = login(email=email, password=password, server=server, port=port)
             users.append(user)
 
