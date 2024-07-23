@@ -93,7 +93,7 @@ def send_email(
             slept = False
 
         except smtplib.SMTPServerDisconnected:
-            print(smtp.SMTPServerDisconnected)
+            print(smtplib.SMTPServerDisconnected)
             smtp = login(email=email, password=password, server=server, port=port)
             users.append(user)
 
@@ -110,10 +110,12 @@ def send_email(
                         print(f"Outgoing quota still not recovered. Sleeping 1 hour till {then}.")
                         sleep(60 * 65)
                         slept = True
+                        snooze = 3
                 else:
                     print(f"Outgoing quota exceeded. Sleeping 1 hour till {then}.")
                     sleep(60 * 65)
                     slept = True
+                    snooze = 3
                 users.append(user)
             else:
                 print(f'Error!\n{str(type(error).__name__)}: {error}')
