@@ -37,7 +37,7 @@ def yon(prompt:str) -> bool:
         answer = (input(prompt)).lower()
         if answer == "yes" or answer == "y": return True
         elif answer == "no" or answer == "n": return False
-        else: print("Can not understand what you wrote...")
+        else: print("\nCan not understand what you wrote...")
 
 def setCredential(ask:bool=True):
     """This function helps set credentials such as your email address and password."""
@@ -95,7 +95,7 @@ def send_email(users:list, **kwargs):
             credential[key] = input(f"Please enter {key}: ")
 
     if save:
-        save = yon("/nDo you want to save these credentials so that you won't have to enter again?(y/n): ")
+        save = yon("\nDo you want to save these credentials so that you won't have to enter again?(y/n): ")
     if save: setCredential(ask=False)
     
     save = False
@@ -106,7 +106,7 @@ def send_email(users:list, **kwargs):
             email_default[key] = input(f"Please enter {key}: ")
         
     if save:
-        save = yon("/nDo you want to save these values so that you won't have to enter again?(y/n): ")
+        save = yon("\nDo you want to save these values so that you won't have to enter again?(y/n): ")
     if save:
         setDefault(ask=False)
 
@@ -117,33 +117,33 @@ def list_getter() -> list:
     """This function will take list of email addresses from the user."""
     
     print(
-        "/nThere are two ways to provide a list of users:\n"
+        "\nThere are two ways to provide a list of users:\n"
         "1. Type the list here. Emails should be separated by space.\n"
         f"2. Put a text file(.txt) in the '{cwd}' directory. "
         "One line per each email address. Don't put two email addresses on the same line"
     )
     for m in range(5):
-        method = input("/nWhich method do you choose?(say in number): ")
+        method = input("\nWhich method do you choose?(say in number): ")
         if method.isnumeric(): 
             method = int(method)
             if method == 1 or method == 2: break
-            else: print("/nChoose between 1 or 2")
-        else: print("/nSay in number...")
+            else: print("\nChoose between 1 or 2")
+        else: print("\nSay in number...")
     
     if method == 1:
-        users = input("/nCool, type the emails now: ")
+        users = input("\nCool, type the emails now: ")
         users = users.split(" ")
     
     if method == 2:
-        print("/nCool. Let's search the directory.")
+        print("\nCool. Let's search the directory.")
 
         user_file = False
 
         for files in cwd.glob('*.txt'):
             if not files:
-                exit(f"/nNo text file found. Put a file in the directory '{cwd}' and restart.")
+                exit(f"\nNo text file found. Put a file in the directory '{cwd}' and restart.")
 
-            user_file = yon(f"/nIs the file name '{files.name}'?(y/n): ")
+            user_file = yon(f"\nIs the file name '{files.name}'?(y/n): ")
 
             if user_file:
                 with open(files) as f:
@@ -151,12 +151,12 @@ def list_getter() -> list:
                     break
 
         if not user_file:
-            exit(f"/nNo text file found. Put a file in the directory '{cwd}' and restart.")
+            exit(f"\nNo text file found. Put a file in the directory '{cwd}' and restart.")
         
-    printable = yon("/nDo you want to check all the email address?(y/n): ")
+    printable = yon("\nDo you want to check all the email address?(y/n): ")
 
     if printable: 
-        print(f"/nFound {len(users)} email addresses:\n")
+        print(f"\nFound {len(users)} email addresses:\n")
         for user in users: print(user + '\n')
     
     return users
@@ -169,6 +169,8 @@ def main():
     if not Method.get(): ask = input("> ")
 
     if ask == "exit": exit()
+
+    if ask == "help": print(help)
 
     if "set cred" in ask: Method.set("set credential")
 
@@ -186,19 +188,19 @@ def main():
         
         if html and body:
             use = yon(
-            "/nThe body of the email and html template already exists. Do you wanna use them?(y/n): "
+            "\nThe body of the email and html template already exists. Do you wanna use them?(y/n): "
             )
 
             if use: send_email(users, body=body, html=html)
             else:
-                body = input("/nPlease enter the body of the email: ")
-                if yon("Just send the bod without html?"):
+                body = input("\nPlease enter the body of the email: ")
+                if yon("\nJust send the bod without html?"):
                     send_email(users, body=body)
         
         if not body:
-            body = input("/nPlease enter the body of the email: ")
+            body = input("\nPlease enter the body of the email: ")
             if not html: 
-                if yon("/nJust send the bod without html?"):
+                if yon("\nJust send the bod without html?"):
                     send_email(users, body=body)
             send_email(users, body=body, html=html)          
         
