@@ -18,7 +18,7 @@ slept: bool = False
 # ------------------------------------ #
 
 # --------------- SCRIPT START ---------------
-def time(minutes:int) -> tuple[datetime, datetime]:
+def time(minutes:int) -> tuple[str, str]:
     """Returns current time and the time after *arg minutes"""
     current_time = (datetime.now()).strftime("%H:%M")
     new_time = (
@@ -72,6 +72,7 @@ def send_email(
         - html: If you have a html code for the email, feel free to pass it as a string.\n
     All the keyword arguments are required.
     """
+    global snooze, slept
 
     smtp = login(email=email, password=password, server=server, port=port)
 
